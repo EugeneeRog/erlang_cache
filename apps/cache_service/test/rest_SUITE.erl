@@ -101,18 +101,21 @@ check_bad_key_post(Config) ->
   StreamPostRef = gun:post(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
   ok = gun:data(ConnPid, StreamPostRef, fin, ?FAIL_RQST_PARAMS),
   {response, _, 400, _} = gun:await(ConnPid, StreamPostRef),
+  {ok, <<"{error: Bad Request}">>} = gun:await_body(ConnPid, StreamPostRef),
   Config.
 
 check_bad_key_get(Config) ->
   ConnPid = prep_gun(),
   StreamGetRef = gun:request(ConnPid, <<"GET">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"fail=example">>),
   {response, _, 400, _} = gun:await(ConnPid, StreamGetRef),
+  {ok, <<"{error: Bad Request}">>} = gun:await_body(ConnPid, StreamGetRef),
   Config.
 
 check_bad_key_delete(Config) ->
   ConnPid = prep_gun(),
   StreamDelRef = gun:request(ConnPid, <<"DELETE">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"fail=example">>),
   {response, _, 400, _} = gun:await(ConnPid, StreamDelRef),
+  {ok, <<"{error: Bad Request}">>} = gun:await_body(ConnPid, StreamDelRef),
   Config.
 
 prep_gun() ->
