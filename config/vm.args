@@ -1,0 +1,6 @@
+-sname cache_service
+
+-setcookie cache_service_cookie
+
++K true
++A30

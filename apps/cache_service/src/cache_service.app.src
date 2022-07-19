@@ -1,0 +1,20 @@
+{application, cache_service,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {cache_service_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    cowboy,
+    trails,
+    cowboy_swagger
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {licenses, ["Apache-2.0"]},
+  {links, []},
+
+  {start_phases, [{start_trails_http, []}]}
+ ]}.
