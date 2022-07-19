@@ -69,32 +69,28 @@ check_post_success(Config) ->
 
 check_get_success(Config) ->
   ConnPid = prep_gun(),
-  StreamRef = gun:get(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
-  ok = gun:data(ConnPid, StreamRef, fin, <<"key=example">>),
+  StreamRef = gun:request(ConnPid, <<"GET">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"key=example">>),
   {response, _, 200, _} = gun:await(ConnPid, StreamRef),
   {ok,?EXEPTED_GET_ETS} = gun:await_body(ConnPid, StreamRef),
   Config.
 
 check_get_undef(Config) ->
   ConnPid = prep_gun(),
-  StreamRef = gun:get(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
-  ok = gun:data(ConnPid, StreamRef, fin, <<"key=fail">>),
+  StreamRef = gun:request(ConnPid, <<"GET">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"key=example">>),
   {response, _, 404, _} = gun:await(ConnPid, StreamRef),
   {ok, <<"">>} = gun:await_body(ConnPid, StreamRef),
   Config.
 
 check_delete_success(Config) ->
   ConnPid = prep_gun(),
-  StreamRef = gun:delete(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
-  ok = gun:data(ConnPid, StreamRef, fin, <<"key=example">>),
+  StreamRef = gun:request(ConnPid, <<"DELETE">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"key=example">>),
   {response, _, 204, _} = gun:await(ConnPid, StreamRef),
   [] = ets:lookup(default_cache, <<"example">>),
   Config.
 
 check_delete_undef(Config) ->
   ConnPid = prep_gun(),
-  StreamRef = gun:delete(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
-  ok = gun:data(ConnPid, StreamRef, fin, <<"key=fail">>),
+  StreamRef = gun:request(ConnPid, <<"DELETE">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"key=example">>),
   {response, _, 404, _} = gun:await(ConnPid, StreamRef),
   [] = ets:lookup(default_cache, <<"example">>),
   Config.
@@ -109,15 +105,13 @@ check_bad_key_post(Config) ->
 
 check_bad_key_get(Config) ->
   ConnPid = prep_gun(),
-  StreamGetRef = gun:get(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
-  ok = gun:data(ConnPid, StreamGetRef, fin, ?FAIL_RQST_PARAMS),
+  StreamGetRef = gun:request(ConnPid, <<"GET">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"fail=example">>),
   {response, _, 400, _} = gun:await(ConnPid, StreamGetRef),
   Config.
 
 check_bad_key_delete(Config) ->
   ConnPid = prep_gun(),
-  StreamDelRef = gun:delete(ConnPid, ?RQST_URL, ?TEST_RQST_HEADERS),
-  ok = gun:data(ConnPid, StreamDelRef, fin, ?FAIL_RQST_PARAMS),
+  StreamDelRef = gun:request(ConnPid, <<"DELETE">>, ?RQST_URL, ?TEST_RQST_HEADERS, <<"fail=example">>),
   {response, _, 400, _} = gun:await(ConnPid, StreamDelRef),
   Config.
 
